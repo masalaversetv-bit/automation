@@ -1,1 +1,38 @@
+name: Auto Market Automation
 
+on:
+  schedule:
+    - cron: "30 1 * * *"   # 7:00 AM IST (1:30 UTC)
+    - cron: "30 3 * * *"   # 9:00 AM IST
+    - cron: "45 4 * * *"   # 10:15 AM IST
+    - cron: "45 6 * * *"   # 12:15 PM IST
+    - cron: "45 7 * * *"   # 1:15 PM IST
+    - cron: "45 8 * * *"   # 2:15 PM IST
+    - cron: "45 9 * * *"   # 3:15 PM IST
+    - cron: "0 10 * * *"   # 3:30 PM IST (Closing)
+
+  workflow_dispatch:  # Manual Run Allowed
+
+jobs:
+  run-automation:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install Requirements
+      run: pip install -r requirements.txt
+
+    - name: Run Automation Script
+      env:
+        WHATSAPP_PHONE_ID: ${{ secrets.WHATSAPP_PHONE_ID }}
+        WHATSAPP_PERMANENT_TOKEN: ${{ secrets.WHATSAPP_PERMANENT_TOKEN }}
+        WHATSAPP_TO_NUMBER: ${{ secrets.WHATSAPP_TO_NUMBER }}
+        BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+      run: python main.py
